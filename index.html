@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <title>scroll</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 引入核心库 -->
+    <script src="js/scroll.js"></script>
+    <script src="js/browser.js"></script>
+</head>
+<body>
+    <div id="mian">
+        <h1>scroll</h1>
+        <section class="grid">
+            <div class="delete">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </section>
+        <section class="grid">
+            <div class="page">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </section>
+        <section class="grid"></section>
+    </div>
+    <script>
+        !browser.isMobile() ? (function(){alert("PC你好,PC再见！");window.close();}()):"";
+
+        var scroll=new Scroll({
+            scrollELE:document.querySelector(".delete"),
+            scrollStart:function(data){
+                if(this.contorl.target.target.localName !="li") return false;
+            },
+            scrollMove:function(data){
+                var oldScroll=parseInt(this.contorl.target.target.getAttribute("scroll"))|| 0 ;
+                var newScroll=oldScroll+this.contorl.moveX;
+                if(newScroll>0) newScroll=0;
+                this.contorl.target.target.style.webkitTransform="translate("+newScroll+"px,0)";
+            },
+            scrollEnd:function(data){
+                var newScroll=parseInt(this.contorl.target.target.getAttribute("scroll") || 0)+parseInt(this.contorl.moveX);
+                newScroll=newScroll> -100  ? 0 :newScroll && newScroll<-100 ? -100 : newScroll;
+                this.contorl.target.target.setAttribute("scroll",newScroll);
+                this.contorl.target.target.style.webkitTransform="translate("+newScroll+"px,0)";
+            }
+        });
+        var pageConfig={
+            index:0,
+            loading:false,
+            prev:function(){
+                this.index--;
+                this.play();
+            },
+            next:function(){
+                this.index++;
+                this.play();
+            },
+            play:function(){
+                document.querySelector(".page ul").style.top="-"+this.index+"00%";
+            },
+            init:function(){}
+        };
+        pageConfig.init();
+        var scroll2=new Scroll({
+            scrollELE:document.querySelector(".page ul"),
+            scrollBottom:function(){
+                pageConfig.prev();
+            },
+            scrollMove:function(){
+
+            },
+            scrollTop:function(){
+                pageConfig.next();
+            }
+
+        });
+        var deleteControl={
+            setMoveX:function(){
+
+            },
+            isScrollTrue:function(){
+
+            }
+        };
+
+    </script>
+</body>
+</html>
